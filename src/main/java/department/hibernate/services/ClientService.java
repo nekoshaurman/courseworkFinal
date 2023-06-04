@@ -1,6 +1,8 @@
 package department.hibernate.services;
 
 import department.hibernate.Client;
+import department.hibernate.Project;
+import department.hibernate.Worker;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -43,8 +45,13 @@ public class ClientService {
 
     public void deleteClient(Client client) {
         Transaction transaction = null;
+        for (Project project : client.getProjects()) new ProjectService().deleteProject(project);
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
+
+            //for (Project project : client.getProjects()) new ProjectService().deleteProject(project);
+            //client.setProjects(null);
+
             session.delete(client);
             transaction.commit();
         } catch (Exception ex) {

@@ -4,37 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0c8d4c13-e553-4caa-8a26-b58862febccd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/Client.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/Project.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/Task.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/Worker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/gui/MainInterface.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/services/ClientService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/services/HibernateUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/services/ProjectService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/services/TableService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/services/TaskService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/services/WorkerService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/META-INF/maven/archetype.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/META-INF/persistence.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/archetype-resources/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/archetype-resources/src/main/java/App.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/archetype-resources/src/test/java/AppTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/pic/add.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/pic/edit.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/pic/remove.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/pic/report.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/pic/save.png" afterDir="false" />
+    <list default="true" id="0c8d4c13-e553-4caa-8a26-b58862febccd" name="Changes" comment="Init commit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/department/hibernate/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/department/hibernate/Project.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/Project.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/department/hibernate/Worker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/Worker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/department/hibernate/gui/MainInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/gui/MainInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/department/hibernate/services/ClientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/services/ClientService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/department/hibernate/services/ProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/services/ProjectService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/department/hibernate/services/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/services/TaskService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/department/hibernate/services/WorkerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/department/hibernate/services/WorkerService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +52,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/study/OOP/lab2",
+    "last_opened_file_path": "C:/study/OOP/coursework",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -106,11 +85,24 @@
       <updated>1685618022761</updated>
       <workItem from="1685618024176" duration="15514000" />
       <workItem from="1685640511977" duration="29622000" />
-      <workItem from="1685726726134" duration="19165000" />
+      <workItem from="1685726726134" duration="27414000" />
+      <workItem from="1685821358461" duration="35036000" />
     </task>
+    <task id="LOCAL-00001" summary="Init commit">
+      <created>1685800254148</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1685800254148</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Init commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Init commit" />
   </component>
 </project>

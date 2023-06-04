@@ -56,20 +56,20 @@ public class Worker {
         this.additional = additional;
     }
 
-    @ManyToMany(cascade = {CascadeType.ALL},//{CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
-                fetch = FetchType.EAGER)
-    @JoinTable(name = "Workers_has_Projects",
-            joinColumns = @JoinColumn(name = "worker_id"),
-            inverseJoinColumns = @JoinColumn(name = "project_id"))
-    private Set<Project> projects = new HashSet<>();
-    public Set<Project> getProjects() {
-        return projects;
-    }
-    public void setProjects(Set<Project> projects) {
-        this.projects = projects;
-    }
+//    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+//                fetch = FetchType.EAGER)
+//    @JoinTable(name = "Workers_has_Projects",
+//            joinColumns = @JoinColumn(name = "worker_id"),
+//            inverseJoinColumns = @JoinColumn(name = "project_id"))
+//    private Set<Project> projects = new HashSet<>();
+//    public Set<Project> getProjects() {
+//        return projects;
+//    }
+//    public void setProjects(Set<Project> projects) {
+//        this.projects = projects;
+//    }
 
-    @OneToMany(mappedBy = "worker", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "worker")
     private Set<Task> tasks = new HashSet<>();
     public void addTask(Task task) {
         this.tasks.add(task);
@@ -94,10 +94,8 @@ public class Worker {
 
     public String projectsToString() {
         String projectsOfWorker = "";
-        Set<Project> projects;
-        projects = getProjects();
-        for (Project test : projects) {
-            projectsOfWorker = projectsOfWorker + test.getName() + " ";
+        for (Task task : tasks) {
+            projectsOfWorker = projectsOfWorker + task.getProject().getName() + " ";
         }
         return projectsOfWorker;
     }

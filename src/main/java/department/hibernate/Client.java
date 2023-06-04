@@ -46,7 +46,7 @@ public class Client {
         this.type = type;
     }
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)//, orphanRemoval = true)
+    @OneToMany(mappedBy = "client")//, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Project> projects = new HashSet<>();
     public Set<Project> getProjects() {
         return projects;

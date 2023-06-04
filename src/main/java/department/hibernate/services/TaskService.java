@@ -1,5 +1,6 @@
 package department.hibernate.services;
 
+import department.hibernate.Project;
 import department.hibernate.Task;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -43,6 +44,10 @@ public class TaskService {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
+
+            //Project project = task.getProject();
+            //project.removeTask(task.getId());
+
             session.delete(task);
             transaction.commit();
         } catch (Exception ex) {

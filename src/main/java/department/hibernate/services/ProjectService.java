@@ -2,6 +2,8 @@ package department.hibernate.services;
 
 import department.hibernate.Client;
 import department.hibernate.Project;
+import department.hibernate.Task;
+import department.hibernate.Worker;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -44,8 +46,17 @@ public class ProjectService {
 
     public void deleteProject(Project project) {
         Transaction transaction = null;
+        for (Task task : project.getTasks()) new TaskService().deleteTask(task);
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
+
+//            for (Worker worker : project.getWorkers()) {
+//                worker.getProjects().remove(project);
+//                session.saveOrUpdate(worker);
+//            }
+
+            //for (Task task : project.getTasks()) new TaskService().deleteTask(task);
+
             session.delete(project);
             transaction.commit();
         } catch (Exception ex) {
@@ -60,7 +71,7 @@ public class ProjectService {
     public Project getProject(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Project project = session.find(Project.class, id);
-            Hibernate.initialize(project.getWorkers());
+            //Hibernate.initialize(project.getWorkers());
             Hibernate.initialize(project.getTasks());
             return project;
         } catch (Exception ex) {
@@ -73,7 +84,7 @@ public class ProjectService {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<Project> projects = session.createQuery("from Project", Project.class).list();
             for(Project project : projects){
-                Hibernate.initialize(project.getWorkers());
+                //Hibernate.initialize(project.getWorkers());
                 Hibernate.initialize(project.getTasks());
             }
             return projects;

@@ -58,22 +58,22 @@ public class Project {
         this.additional = additional;
     }
 
-    @ManyToMany(mappedBy = "projects", cascade = {CascadeType.ALL})
-    private Set<Worker> workers = new HashSet<>();
-    public void addWorker(Worker worker) {
-        this.workers.add(worker);
-        worker.getProjects().add(this);
-    }
-    public Set<Worker> getWorkers() {
-        return workers;
-    }
-    public void removeWorker(long tagId) {
-        Worker person = this.workers.stream().filter(t -> t.getId() == tagId).findFirst().orElse(null);
-        if (person != null) {
-            this.workers.remove(person);
-            person.getProjects().remove(this);
-        }
-    }
+//    @ManyToMany(mappedBy = "projects", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
+//    private Set<Worker> workers = new HashSet<>();
+//    public void addWorker(Worker worker) {
+//        this.workers.add(worker);
+//        worker.getProjects().add(this);
+//    }
+//    public Set<Worker> getWorkers() {
+//        return workers;
+//    }
+//    public void removeWorker(long tagId) {
+//        Worker person = this.workers.stream().filter(t -> t.getId() == tagId).findFirst().orElse(null);
+//        if (person != null) {
+//            this.workers.remove(person);
+//            person.getProjects().remove(this);
+//        }
+//    }
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id")
@@ -85,7 +85,7 @@ public class Project {
         this.client = client;
     }
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER)//, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Task> tasks = new HashSet<>();
     public void addTask(Task task) {
         this.tasks.add(task);
