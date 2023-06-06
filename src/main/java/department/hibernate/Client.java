@@ -55,6 +55,10 @@ public class Client {
         this.projects = projects;
     }
 
+    /**
+     * Concatenates the names of the client's projects into a single string
+     * @return
+     */
     @Transactional
     public String projectsToString() {
         String projectsOfClient = "";

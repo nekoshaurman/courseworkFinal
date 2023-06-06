@@ -2,7 +2,7 @@ package department.hibernate.services;
 
 import department.hibernate.Client;
 import department.hibernate.Project;
-import department.hibernate.Worker;
+
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -12,7 +12,15 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class for working with Client table in the database
+ */
 public class ClientService {
+    /**
+     * Adds a client to the database
+     * @param client
+     * @return
+     */
     public Boolean addClient(Client client) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -29,6 +37,10 @@ public class ClientService {
         return false;
     }
 
+    /**
+     * Updates a client in database
+     * @param client
+     */
     public void updateClient(Client client) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -43,15 +55,15 @@ public class ClientService {
         }
     }
 
+    /**
+     * Deletes a client from database
+     * @param client
+     */
     public void deleteClient(Client client) {
         Transaction transaction = null;
         for (Project project : client.getProjects()) new ProjectService().deleteProject(project);
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-
-            //for (Project project : client.getProjects()) new ProjectService().deleteProject(project);
-            //client.setProjects(null);
-
             session.delete(client);
             transaction.commit();
         } catch (Exception ex) {
@@ -62,6 +74,11 @@ public class ClientService {
         }
     }
 
+    /**
+     * Get client from database by id
+     * @param id
+     * @return
+     */
     @Transactional
     public Client getClient(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -74,6 +91,10 @@ public class ClientService {
         }
     }
 
+    /**
+     * Gets all clients from database
+     * @return
+     */
     public List<Client> getClients() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<Client> clients = session.createQuery("from Client", Client.class).list();

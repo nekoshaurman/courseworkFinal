@@ -1,8 +1,8 @@
 package department.hibernate.services;
 
-import department.hibernate.Project;
 import department.hibernate.Task;
 import department.hibernate.Worker;
+
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,7 +11,15 @@ import org.hibernate.resource.transaction.spi.TransactionStatus;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class for working with Worker table in the database
+ */
 public class WorkerService {
+    /**
+     * Adds a worker to the database
+     * @param worker
+     * @return
+     */
     public Boolean addWorker(Worker worker) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -28,6 +36,10 @@ public class WorkerService {
         return false;
     }
 
+    /**
+     * Updates a worker in database
+     * @param worker
+     */
     public void updateWorker(Worker worker) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -42,6 +54,10 @@ public class WorkerService {
         }
     }
 
+    /**
+     * Deletes a worker from database
+     * @param worker
+     */
     public void deleteWorker(Worker worker) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -61,6 +77,11 @@ public class WorkerService {
         }
     }
 
+    /**
+     * Get worker from database by id
+     * @param id
+     * @return
+     */
     public Worker getWorker(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Worker worker = session.find(Worker.class, id);
@@ -73,6 +94,10 @@ public class WorkerService {
         }
     }
 
+    /**
+     * Gets all workers from database
+     * @return
+     */
     public List<Worker> getWorkers() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             List<Worker> workers = session.createQuery("from Worker", Worker.class).list();

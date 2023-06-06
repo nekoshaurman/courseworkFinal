@@ -5,38 +5,34 @@ import department.hibernate.Project;
 import department.hibernate.Task;
 import department.hibernate.Worker;
 import department.hibernate.services.*;
-import org.hibernate.Hibernate;
+
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.JXMonthView;
 import org.jdesktop.swingx.plaf.basic.CalendarHeaderHandler;
 import org.jdesktop.swingx.plaf.basic.SpinningCalendarHeaderHandler;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * The class of the main interface. All functionality of the app comes from this class
+ */
 public class MainInterface {
     private JFrame Frame;
-    private JToolBar toolBar;
-    private JButton add;
-    private JButton edit;
-    private JButton remove;
-    private JButton info;
-    private JButton report;
-    private JButton addWorkerToProject;
-    private JButton addTaskToWorker;
     private JTextField searchField;
     private JTabbedPane tabbedPanel;
-    private JPanel projectsPanel;
-    private JPanel workersPanel;
-    private JPanel clientsPanel;
-    private JPanel tasksPanel;
     private JTable projectsTable;
     private JTable workersTable;
     private JTable clientsTable;
@@ -50,6 +46,12 @@ public class MainInterface {
     private TableRowSorter<TableModel> clientsSorter;
     private TableRowSorter<TableModel> tasksSorter;
 
+    protected static final Logger logger = LogManager.getLogger(MainInterface.class);
+
+    /**
+     * Get confirm of operation from user
+     * @return boolean
+     */
     public boolean confirmDialog() {
         int getInfo = JOptionPane.showConfirmDialog(null, "Confirm operation?");
         boolean check;
@@ -60,6 +62,11 @@ public class MainInterface {
         return check;
     }
 
+    /**
+     * Check, that user select row in table
+     * @param table
+     * @return boolean
+     */
     public boolean checkSelection(JTable table) {
         boolean check;
         if (table.getSelectedRow() == -1) {
@@ -70,6 +77,9 @@ public class MainInterface {
         return check;
     }
 
+    /**
+     * Shows main interface of app
+     */
     public void show() {
         ProjectService projectService = new ProjectService();
         WorkerService workerService = new WorkerService();
@@ -80,20 +90,20 @@ public class MainInterface {
         Frame.setResizable(false);
         Frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        toolBar = new JToolBar();
-        // Create buttons for toolbar
-        add = new JButton(new ImageIcon("src/main/resources/pic/add.png"));
-        edit = new JButton(new ImageIcon("src/main/resources/pic/edit.png"));
-        remove = new JButton(new ImageIcon("src/main/resources/pic/remove.png"));
-        info = new JButton(new ImageIcon("src/main/resources/pic/info.png"));
-        report = new JButton(new ImageIcon("src/main/resources/pic/report.png"));
+        // Create toolbar and buttons for toolbar
+        JToolBar toolBar;
+        JButton add = new JButton(new ImageIcon("src/main/resources/pic/add.png"));
+        JButton edit = new JButton(new ImageIcon("src/main/resources/pic/edit.png"));
+        JButton remove = new JButton(new ImageIcon("src/main/resources/pic/remove.png"));
+        JButton info = new JButton(new ImageIcon("src/main/resources/pic/info.png"));
+        JButton report = new JButton(new ImageIcon("src/main/resources/pic/report.png"));
 
         // Create Tabbed panel and Tabs
         tabbedPanel = new JTabbedPane();
-        projectsPanel = new JPanel();
-        workersPanel = new JPanel();
-        clientsPanel = new JPanel();
-        tasksPanel = new JPanel();
+        JPanel projectsPanel = new JPanel();
+        JPanel workersPanel = new JPanel();
+        JPanel clientsPanel = new JPanel();
+        JPanel tasksPanel = new JPanel();
 
         // Projects Tab
         projectsTable = new JTable();
@@ -102,8 +112,6 @@ public class MainInterface {
         // Workers Tab
         workersTable = new JTable();
         workersScroll = new JScrollPane();
-        addWorkerToProject = new JButton("Connect");
-        addWorkerToProject.setToolTipText("Connect user to project");
 
         // Clients Tab
         clientsTable = new JTable();
@@ -112,8 +120,6 @@ public class MainInterface {
         // Tasks Tab
         tasksTable = new JTable();
         tasksScroll = new JScrollPane();
-        addTaskToWorker = new JButton("Connect");
-        addTaskToWorker.setToolTipText("Connect task to worker");
 
         // Create search field
         searchField = new JTextField();
@@ -228,13 +234,23 @@ public class MainInterface {
 
         add.addActionListener(e -> {
             if (tabbedPanel.getTitleAt(tabbedPanel.getSelectedIndex()).equals("Projects")) {
-                addProjectInterface();
+                if (workerService.getWorkers().size() != 0) {
+                    logger.info("Open add project frame");
+                    addProjectInterface();
+                }
+                else JOptionPane.showMessageDialog(Frame, "No clients", "Error", JOptionPane.ERROR_MESSAGE);
             } else if (tabbedPanel.getTitleAt(tabbedPanel.getSelectedIndex()).equals("Workers")) {
+                logger.info("Open add worker frame");
                 addWorkerInterface();
             }else if (tabbedPanel.getTitleAt(tabbedPanel.getSelectedIndex()).equals("Clients")) {
+                logger.info("Open add client frame");
                 addClientInterface();
             } else if (tabbedPanel.getTitleAt(tabbedPanel.getSelectedIndex()).equals("Tasks")) {
-                addTaskInterface();
+                if (workerService.getWorkers().size() != 0 && projectService.getProjects().size() != 0) {
+                    logger.info("Open add task frame");
+                    addTaskInterface();
+                }
+                else JOptionPane.showMessageDialog(Frame, "No clients or workers", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -245,7 +261,9 @@ public class MainInterface {
                 } else {
                     try {
                         editProjectInterface(projectsTable.getSelectedRow());
+                        logger.info("Open edit project frame");
                     } catch (ParseException ex) {
+                        logger.info("Edit project frame doesn't opened");
                         throw new RuntimeException(ex);
                     }
                 }
@@ -255,7 +273,9 @@ public class MainInterface {
                 } else {
                     try {
                         editWorkerInterface(workersTable.getSelectedRow());
+                        logger.info("Open edit worker frame");
                     } catch (ParseException ex) {
+                        logger.info("Edit worker frame doesn't opened");
                         throw new RuntimeException(ex);
                     }
                 }
@@ -263,12 +283,14 @@ public class MainInterface {
                 if (clientsTable.getSelectedRow() == -1) {
                     JOptionPane.showMessageDialog(Frame, "Select row", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
+                    logger.info("Open edit task frame");
                     editClientInterface(clientsTable.getSelectedRow());
                 }
             } else if (tabbedPanel.getTitleAt(tabbedPanel.getSelectedIndex()).equals("Tasks")) {
                 if (tasksTable.getSelectedRow() == -1) {
                     JOptionPane.showMessageDialog(Frame, "Select row", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
+                    logger.info("Open edit task frame");
                     editTaskInterface(tasksTable.getSelectedRow());
                 }
             }
@@ -277,36 +299,44 @@ public class MainInterface {
         remove.addActionListener(e -> {
             if (tabbedPanel.getTitleAt(tabbedPanel.getSelectedIndex()).equals("Projects")) {
                 if (checkSelection(projectsTable)) {
+                    logger.info("Try to delete project");
                     if (confirmDialog()) {
                         Project project = projectService
                                 .getProject((int)projectsTable.getValueAt(projectsTable.getSelectedRow(), 0));
+                        logger.info("Delete project with ID " + project.getId());
                         projectService.deleteProject(project);
                         tableDesign();
                     }
                 }
             } else if (tabbedPanel.getTitleAt(tabbedPanel.getSelectedIndex()).equals("Workers")) {
                 if (checkSelection(workersTable)) {
+                    logger.info("Try to delete worker");
                     if (confirmDialog()) {
                         Worker worker = workerService
                                 .getWorker((int)workersTable.getValueAt(workersTable.getSelectedRow(), 0));
+                        logger.info("Delete worker with ID " + worker.getId());
                         workerService.deleteWorker(worker);
                         tableDesign();
                     }
                 }
             } else if (tabbedPanel.getTitleAt(tabbedPanel.getSelectedIndex()).equals("Clients")) {
                 if (checkSelection(clientsTable)) {
+                    logger.info("Try to delete client");
                     if (confirmDialog()) {
                         Client client = clientService
                                 .getClient((int)clientsTable.getValueAt(clientsTable.getSelectedRow(), 0));
+                        logger.info("Delete client with ID " + client.getId());
                         clientService.deleteClient(client);
                         tableDesign();
                     }
                 }
             } else if (tabbedPanel.getTitleAt(tabbedPanel.getSelectedIndex()).equals("Tasks")) {
                 if (checkSelection(tasksTable)) {
+                    logger.info("Try to delete task");
                     if (confirmDialog()) {
                         Task task = taskService
                                 .getTask((int)tasksTable.getValueAt(tasksTable.getSelectedRow(), 0));
+                        logger.info("Delete task with ID " + task.getId());
                         taskService.deleteTask(task);
                         tableDesign();
                     }
@@ -318,31 +348,51 @@ public class MainInterface {
         info.addActionListener(e ->{
             if (tabbedPanel.getTitleAt(tabbedPanel.getSelectedIndex()).equals("Projects")) {
                 if (checkSelection(projectsTable)) {
+                    logger.info("Open info project frame");
                     infoProjectInterface(projectService
                             .getProject((int)projectsTable.getValueAt(projectsTable.getSelectedRow(), 0)));
                 }
             } else if (tabbedPanel.getTitleAt(tabbedPanel.getSelectedIndex()).equals("Workers")) {
                 if (checkSelection(workersTable)) {
+                    logger.info("Open info worker frame");
                     infoWorkerInterface(workerService
                             .getWorker((int)workersTable.getValueAt(workersTable.getSelectedRow(), 0)));
                 }
             } else if (tabbedPanel.getTitleAt(tabbedPanel.getSelectedIndex()).equals("Clients")) {
                 if (checkSelection(clientsTable)) {
+                    logger.info("Open info client frame");
                     infoClientInterface(clientService
                             .getClient((int)clientsTable.getValueAt(clientsTable.getSelectedRow(), 0)));
                 }
             } else if (tabbedPanel.getTitleAt(tabbedPanel.getSelectedIndex()).equals("Tasks")) {
                 if (checkSelection(tasksTable)) {
+                    logger.info("Open info task frame");
                     infoTaskInterface(taskService
                             .getTask((int)tasksTable.getValueAt(tasksTable.getSelectedRow(), 0)));
                 }
             }
         });
 
+        report.addActionListener(e -> {
+            try {
+                new TableService().create_pdf_file((DefaultTableModel) projectsTable.getModel(),
+                                                   (DefaultTableModel) tasksTable.getModel());
+                logger.info("Create report");
+                JOptionPane.showMessageDialog(Frame, "Report created", "Done", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException ex) {
+                logger.warn("Report doesn't created");
+                JOptionPane.showMessageDialog(Frame, "Report error", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
         Frame.pack();
         Frame.setVisible(true);
+        logger.info("Open main frame");
     }
 
+    /**
+     * Prepares tables for the interface
+     */
     public void tableDesign() {
         // Get tables with actual data
         projectsTable = new TableService().getProjectsTable();
@@ -409,8 +459,12 @@ public class MainInterface {
         tasksTable.getColumnModel().getColumn(4).setPreferredWidth(140); // Worker
     }
 
-    // Get model of table where search is on
+    /**
+     * Get model of table where search is on and set search in this table
+     * @param sorter
+     */
     public void searchTab(TableRowSorter<TableModel> sorter) {
+        logger.info("Change search table");
         searchField.getDocument().addDocumentListener(new DocumentListener(){
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -439,18 +493,21 @@ public class MainInterface {
         });
     }
 
+    /**
+     * Shows interface of adding new project
+     */
     public void addProjectInterface() {
         ProjectService projectService = new ProjectService();
         ClientService clientService = new ClientService();
 
-        JDialog addFrame = new JDialog(Frame, "Add Task");
+        JDialog addFrame = new JDialog(Frame, "Add Project");
         addFrame.setResizable(false);
         addFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
         List<Client> clients = clientService.getClients();
         List<Project> projects = projectService.getProjects();
 
-        ArrayList<String> arrayClients = new ArrayList<String>();
+        ArrayList<String> arrayClients = new ArrayList<>();
 
         for (Client client : clients) {
             arrayClients.add(client.getName());
@@ -583,17 +640,22 @@ public class MainInterface {
                 tableDesign();
 
                 addFrame.dispose();
+                logger.info("Close add project frame with saving");
             }
         });
 
         cancelAddProject.addActionListener(e -> {
             addFrame.dispose();
+            logger.info("Close add project frame without saving");
         });
 
         addFrame.pack();
         addFrame.setVisible(true);
     }
 
+    /**
+     * Shows interface of adding new worker
+     */
     public void addWorkerInterface() {
         WorkerService workerService = new WorkerService();
 
@@ -728,12 +790,17 @@ public class MainInterface {
 
         cancelAddWorker.addActionListener(e -> {
             addFrame.dispose();
+            logger.info("Close add worker frame with saving");
         });
 
         addFrame.pack();
         addFrame.setVisible(true);
+        logger.info("Close add worker frame without saving");
     }
 
+    /**
+     * Shows interface of adding new client
+     */
     public void addClientInterface() {
         ClientService clientService = new ClientService();
 
@@ -830,17 +897,22 @@ public class MainInterface {
                 tableDesign();
 
                 addFrame.dispose();
+                logger.info("Close add client frame with saving");
             }
         });
 
         cancelAddClient.addActionListener(e -> {
             addFrame.dispose();
+            logger.info("Close add client frame without saving");
         });
 
         addFrame.pack();
         addFrame.setVisible(true);
     }
 
+    /**
+     * Shows interface of adding new task
+     */
     public void addTaskInterface() {
         TaskService taskService = new TaskService();
         ProjectService projectService = new ProjectService();
@@ -854,8 +926,8 @@ public class MainInterface {
         List<Worker> workers = workerService.getWorkers();
         List<Project> projects = projectService.getProjects();
 
-        ArrayList<String> arrayProjects = new ArrayList<String>();
-        ArrayList<String> arrayWorkers = new ArrayList<String>();
+        ArrayList<String> arrayProjects = new ArrayList<>();
+        ArrayList<String> arrayWorkers = new ArrayList<>();
 
         for (Project project : projects) {
             arrayProjects.add(project.getName());
@@ -980,9 +1052,6 @@ public class MainInterface {
             }
             else {
                 Task task = new Task(name, status, additional);
-//                if (!project.getWorkers().stream().noneMatch(t -> (t.equals(worker)))) {
-//                    project.addWorker(worker);
-//                }
                 project.addTask(task);
                 worker.addTask(task);
 
@@ -994,17 +1063,24 @@ public class MainInterface {
                 tableDesign();
 
                 addFrame.dispose();
+                logger.info("Close add task frame with saving");
             }
         });
 
         cancelAddTask.addActionListener(e -> {
             addFrame.dispose();
+            logger.info("Close add task frame without saving");
         });
 
         addFrame.pack();
         addFrame.setVisible(true);
     }
 
+    /**
+     * Shows the interface for editing the project
+     * @param row
+     * @throws ParseException
+     */
     public void editProjectInterface(int row) throws ParseException {
         ProjectService projectService = new ProjectService();
 
@@ -1129,16 +1205,23 @@ public class MainInterface {
                 tableDesign();
 
                 editFrame.dispose();
+                logger.info("Close edit project frame with saving");
             }
         });
 
         cancelEditProject.addActionListener(e -> {
             editFrame.dispose();
+            logger.info("Close edit project frame without saving");
         });
         editFrame.pack();
         editFrame.setVisible(true);
     }
 
+    /**
+     * Shows the interface for editing the worker
+     * @param row
+     * @throws ParseException
+     */
     public void editWorkerInterface(int row) throws ParseException {
         WorkerService workerService = new WorkerService();
 
@@ -1280,16 +1363,22 @@ public class MainInterface {
                 tableDesign();
 
                 editFrame.dispose();
+                logger.info("Close edit worker frame with saving");
             }
         });
 
         cancelEditWorker.addActionListener(e -> {
             editFrame.dispose();
+            logger.info("Close edit worker frame without saving");
         });
         editFrame.pack();
         editFrame.setVisible(true);
     }
 
+    /**
+     * Shows the interface for editing the Client
+     * @param row
+     */
     public void editClientInterface(int row) {
         ClientService clientService = new ClientService();
 
@@ -1390,16 +1479,22 @@ public class MainInterface {
                 tableDesign();
 
                 editFrame.dispose();
+                logger.info("Close edit client frame with saving");
             }
         });
 
         cancelEditClient.addActionListener(e -> {
             editFrame.dispose();
+            logger.info("Close edit client frame without saving");
         });
         editFrame.pack();
         editFrame.setVisible(true);
     }
 
+    /**
+     * Shows the interface for editing the task
+     * @param row
+     */
     public void editTaskInterface(int row) {
         TaskService taskService = new TaskService();
         ProjectService projectService = new ProjectService();
@@ -1414,7 +1509,7 @@ public class MainInterface {
         List<Task> tasks = taskService.getTasks();
         List<Worker> workers = workerService.getWorkers();
 
-        ArrayList<String> arrayWorkers = new ArrayList<String>();
+        ArrayList<String> arrayWorkers = new ArrayList<>();
 
         for (Worker worker : workers) {
             arrayWorkers.add(worker.getName() + " " + worker.getSurname());
@@ -1523,9 +1618,6 @@ public class MainInterface {
                 task.setAdditional(additional);
                 task.setStatus(status);
                 Project project = task.getProject();
-//                if (project.getWorkers().stream().noneMatch(t -> (t.equals(worker)))) {
-//                    project.addWorker(worker);
-//                }
 
                 taskService.updateTask(task);
 
@@ -1535,22 +1627,28 @@ public class MainInterface {
                 tableDesign();
 
                 editFrame.dispose();
+                logger.info("Close edit task frame with saving");
             }
         });
 
         cancelEditTask.addActionListener(e -> {
             editFrame.dispose();
+            logger.info("Close edit task frame without saving");
         });
         editFrame.pack();
         editFrame.setVisible(true);
     }
 
+    /**
+     * Shows the interface with information about project
+     * @param project
+     */
     public void infoProjectInterface(Project project) {
         JDialog infoFrame = new JDialog(Frame, "About Project");
         infoFrame.setResizable(false);
         infoFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
-        String tasksAndWorkers = new String();
+        String tasksAndWorkers = "";
         for (Task task : project.getTasks()) {
             if (task.getWorker() != null) {
                 tasksAndWorkers = tasksAndWorkers + "Task: " + task.getName() + "\n"
@@ -1672,17 +1770,22 @@ public class MainInterface {
 
         okInfoProject.addActionListener(e -> {
             infoFrame.dispose();
+            logger.info("Close info project frame");
         });
         infoFrame.pack();
         infoFrame.setVisible(true);
     }
 
+    /**
+     * Shows the interface with information about worker
+     * @param worker
+     */
     public void infoWorkerInterface(Worker worker) {
         JDialog infoFrame = new JDialog(Frame, "About Worker");
         infoFrame.setResizable(false);
         infoFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
-        String tasksOfWorker = new String();
+        String tasksOfWorker = "";
         List<Task> tasks = new TaskService().getTasks();
         for (Task task : tasks) {
             if (worker.getId() == task.getWorker().getId()) {
@@ -1788,17 +1891,22 @@ public class MainInterface {
 
         okInfoWorker.addActionListener(e -> {
             infoFrame.dispose();
+            logger.info("Close info worker frame");
         });
         infoFrame.pack();
         infoFrame.setVisible(true);
     }
 
+    /**
+     * Shows the interface with information about client
+     * @param client
+     */
     public void infoClientInterface(Client client) {
         JDialog infoFrame = new JDialog(Frame, "About Client");
         infoFrame.setResizable(false);
         infoFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
-        String projectsOfClient = new String();
+        String projectsOfClient = "";
         for (Project project : client.getProjects()) {
             projectsOfClient = projectsOfClient + "Project: " + project.getName() + "\n";
         }
@@ -1882,11 +1990,16 @@ public class MainInterface {
 
         okInfoClient.addActionListener(e -> {
             infoFrame.dispose();
+            logger.info("Close info client frame");
         });
         infoFrame.pack();
         infoFrame.setVisible(true);
     }
 
+    /**
+     * Shows the interface with information about task
+     * @param task
+     */
     public void infoTaskInterface(Task task) {
         JDialog infoFrame = new JDialog(Frame, "About Task");
         infoFrame.setResizable(false);
@@ -1984,6 +2097,7 @@ public class MainInterface {
 
         okInfoTask.addActionListener(e -> {
             infoFrame.dispose();
+            logger.info("Close info task frame");
         });
         infoFrame.pack();
         infoFrame.setVisible(true);

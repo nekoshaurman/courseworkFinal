@@ -5,11 +5,19 @@ import department.hibernate.Project;
 import department.hibernate.Task;
 import department.hibernate.Worker;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.io.IOException;
 import java.util.List;
 
 public class TableService {
+    private PDDocument document;
     private JTable projectsTable;
     private JTable workersTable;
     private JTable clientsTable;
@@ -149,19 +157,89 @@ public class TableService {
         return tasksTable;
     }
 
-    public DefaultTableModel getWorkersModel() {
-        return (DefaultTableModel) getWorkersTable().getModel();
+    void create_pdf_table(DefaultTableModel model, String table_name) throws IOException {
+
+        PDPage page = new PDPage();
+        document.addPage(page);
+
+        int pageHeight = (int) page.getTrimBox().getHeight() - 1;
+        int pageWidth = (int) page.getTrimBox().getHeight() - 1;
+        PDPageContentStream contentStream = new PDPageContentStream(document, page);
+        contentStream.setStrokingColor(Color.BLACK);
+        contentStream.setLineWidth(1);
+
+        int initX = 15;
+        int initY = pageHeight;
+        int cellHeight = 20;
+        int cellWidth = 90;
+
+        contentStream.beginText();
+        contentStream.newLineAtOffset(pageWidth / 2 - 130, initY - cellHeight + 10);
+        contentStream.setFont(PDType1Font.TIMES_BOLD, 15);
+        contentStream.showText(table_name);
+        contentStream.endText();
+        initY -= cellHeight;
+        initY -= cellHeight;
+
+        for (int i = -1; i < model.getRowCount(); i++) {
+            for (int j = 0; j < model.getColumnCount(); j++) {
+                if (j == 0) contentStream.addRect(initX, initY, 20, -cellHeight);
+                else if (j == 1) contentStream.addRect(initX, initY, 180, -cellHeight);
+                else if (j == 2) contentStream.addRect(initX, initY, 60, -cellHeight);
+                else if (j == 3) contentStream.addRect(initX, initY, 180, -cellHeight);
+                else contentStream.addRect(initX, initY, 120, -cellHeight);
+
+                contentStream.beginText();
+                if (j == 0) contentStream.newLineAtOffset(initX + 2, initY - cellHeight + 8);
+                else if (j == 1) contentStream.newLineAtOffset(initX + 2, initY - cellHeight + 8);
+                else if (j == 2) contentStream.newLineAtOffset(initX + 2, initY - cellHeight + 8);
+                else if (j == 3) contentStream.newLineAtOffset(initX + 2, initY - cellHeight + 8);
+                else contentStream.newLineAtOffset(initX + 2, initY - cellHeight + 8);
+
+                if (i == -1) {
+                    contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+                    contentStream.showText(model.getColumnName(j));
+
+                } else {
+                    contentStream.setFont(PDType1Font.TIMES_ROMAN, 12);
+                    contentStream.showText(model.getValueAt(i, j).toString());
+                }
+                contentStream.endText();
+                if (j == 0) initX += 20;
+                else if (j == 1) initX += 180;
+                else if (j == 2) initX += 60;
+                else if (j == 3) initX += 180;
+                else initX += 0;
+            }
+            initX = 15;
+            initY -= cellHeight;
+            if (initY == 9) {
+                contentStream.stroke();
+                contentStream.close();
+
+                PDPage second_page = new PDPage();
+                document.addPage(second_page);
+                initY = pageHeight;
+                contentStream = new PDPageContentStream(document, second_page);
+                contentStream.setStrokingColor(Color.BLACK);
+                contentStream.setLineWidth(1);
+            }
+        }
+
+        contentStream.stroke();
+        contentStream.close();
     }
 
-    public DefaultTableModel getProjectsModel() {
-        return (DefaultTableModel) getProjectsTable().getModel();
-    }
 
-    public DefaultTableModel getClientsModel() {
-        return (DefaultTableModel) getClientsTable().getModel();
-    }
+    public void create_pdf_file(DefaultTableModel projectsModel,
+                                DefaultTableModel tasksModel) throws IOException {
 
-    public DefaultTableModel getTasksModel() {
-        return (DefaultTableModel) getTasksTable().getModel();
+        document = new PDDocument();
+
+        create_pdf_table(projectsModel, "Projects");
+        create_pdf_table(tasksModel, "Tasks");
+
+        document.save("Report.pdf");
+        document.close();
     }
 }
